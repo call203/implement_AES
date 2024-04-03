@@ -13,7 +13,7 @@
 /*
  * S-box
  */
-static uint8_t s_box[256] = {
+static unsigned char s_box[256] = {
     0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
     0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
     0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15,
@@ -31,7 +31,7 @@ static uint8_t s_box[256] = {
     0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,
     0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16};
 
-uint8_t Rcon[10] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36};
+unsigned char Rcon[10] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36};
 
 /*
  * Operations used when encrypting a block
@@ -165,9 +165,9 @@ void add_round_key(unsigned char *block, unsigned char *round_key)
 /*
  * cyclie permutation
  */
-void rot_word(uint8_t *word)
+void rot_word(unsigned char *word)
 {
-  uint8_t temp = word[0];
+  unsigned char temp = word[0];
   for (int i = 0; i < 3; i++)
   {
     word[i] = word[i + 1];
@@ -178,7 +178,7 @@ void rot_word(uint8_t *word)
 /*
  * applies an s_box to each of the four btyes
  */
-void sub_word(uint8_t *word)
+void sub_word(unsigned char *word)
 {
   for (int i = 0; i < 4; i++)
   {
@@ -193,7 +193,7 @@ void sub_word(uint8_t *word)
  */
 void *expand_key(unsigned char *cipher_key, unsigned char *expanded_key)
 {
-  uint8_t temp[4];
+  unsigned char temp[4];
   int i;
 
   for (i = 0; i < Nk; i++)
@@ -290,17 +290,17 @@ unsigned char *aes_decrypt_block(unsigned char *ciphertext,
   return output;
 }
 
-// int main()
-// {
-//   unsigned char plaintext[16] = {1, 2, 3, 4, 5, 6, 7, 8,
-//                                  9, 10, 11, 12, 13, 14, 15, 16};
-//   unsigned char key[16] = {50, 20, 46, 86, 67, 9, 70, 27,
-//                            75, 17, 51, 17, 4, 8, 6, 99};
-//   unsigned char expanded_key[176];
+int main()
+{
+  unsigned char plaintext[16] = {1, 2, 3, 4, 5, 6, 7, 8,
+                                 9, 10, 11, 12, 13, 14, 15, 16};
+  unsigned char key[16] = {50, 20, 46, 86, 67, 9, 70, 27,
+                           75, 17, 51, 17, 4, 8, 6, 99};
+  unsigned char expanded_key[176];
 
-//   expand_key(key, expanded_key);
+  expand_key(key, expanded_key);
 
-//   aes_encrypt_block(plaintext, expanded_key);
+  aes_encrypt_block(plaintext, expanded_key);
 
-//   return 0;
-// }
+  return 0;
+}
