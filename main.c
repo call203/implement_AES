@@ -33,7 +33,6 @@ int main()
                            75, 17, 51, 17, 4, 8, 6, 99};
 
   unsigned char expanded_key[176];
-
   expand_key(key, expanded_key);
 
   unsigned char *ciphertext = aes_encrypt_block(plaintext, expanded_key);
@@ -48,7 +47,7 @@ int main()
   // printf("\n\n########### RECOVERED PLAINTEXT ###########\n");
   // print_128bit_block(recovered_plaintext);
 
-  // free(ciphertext);
+  free(ciphertext);
   // free(recovered_plaintext);
 
   return 0;
