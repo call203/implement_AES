@@ -8,7 +8,6 @@
 
 #define BLOCK_ACCESS(block, row, col) (block[(row * 4) + col])
 #define BLOCK_SIZE 16
-#define TEMP // remove!!!
 
 /*
  * These should be the main encrypt/decrypt functions (i.e. the main

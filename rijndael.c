@@ -269,8 +269,6 @@ unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key)
     }
   }
 
-  printf("hi");
-
   // for (int k = 0; k < 16; k++)
   // {
   //   printf("%02X ", output[k]);
