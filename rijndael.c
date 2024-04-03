@@ -290,17 +290,17 @@ unsigned char *aes_decrypt_block(unsigned char *ciphertext,
   return output;
 }
 
-int main()
-{
-  unsigned char plaintext[16] = {1, 2, 3, 4, 5, 6, 7, 8,
-                                 9, 10, 11, 12, 13, 14, 15, 16};
-  unsigned char key[16] = {50, 20, 46, 86, 67, 9, 70, 27,
-                           75, 17, 51, 17, 4, 8, 6, 99};
-  unsigned char expanded_key[176];
+// int main()
+// {
+//   unsigned char plaintext[16] = {1, 2, 3, 4, 5, 6, 7, 8,
+//                                  9, 10, 11, 12, 13, 14, 15, 16};
+//   unsigned char key[16] = {50, 20, 46, 86, 67, 9, 70, 27,
+//                            75, 17, 51, 17, 4, 8, 6, 99};
+//   unsigned char expanded_key[176];
 
-  expand_key(key, expanded_key);
+//   expand_key(key, expanded_key);
 
-  aes_encrypt_block(plaintext, expanded_key);
+//   aes_encrypt_block(plaintext, expanded_key);
 
-  return 0;
-}
+//   return 0;
+// }
