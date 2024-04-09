@@ -336,17 +336,6 @@ void *expand_key(unsigned char *cipher_key, unsigned char *expanded_key)
  * header file should go here
  */
 
-void test(unsigned char *block, unsigned char *plaintext)
-{
-  int i, j;
-  for (i = 0; i < 4; i++)
-  {
-    for (j = 0; j < 4; j++)
-    {
-      block[4 * i + j] = plaintext[i + j * 4];
-    }
-  }
-}
 unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key)
 {
   unsigned char *output =
@@ -355,14 +344,13 @@ unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key)
   unsigned int i, j, round;
 
   // reshaping plaintext from a linear array into a 4*4 matrix
-  // for (i = 0; i < 4; i++)
-  // {
-  //   for (j = 0; j < 4; j++)
-  //   {
-  //     block[4 * i + j] = plaintext[i + j * 4];
-  //   }
-  // }
-  test(block, plaintext);
+  for (i = 0; i < 4; i++)
+  {
+    for (j = 0; j < 4; j++)
+    {
+      block[4 * i + j] = plaintext[i + j * 4];
+    }
+  }
 
   add_round_key(block, key);
 
