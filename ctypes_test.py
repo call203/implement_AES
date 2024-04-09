@@ -1,4 +1,6 @@
-from aes.aes import sub_bytes, bytes2matrix, shift_rows
+import sys
+sys.path.append('./aes')
+from aes import bytes2matrix,sub_bytes
 import unittest
 import random
 import ctypes
