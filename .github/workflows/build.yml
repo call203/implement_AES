@@ -10,14 +10,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-   steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          sparse-checkout: |
+            aes
 
       - name: Build with Makefile
         run: make
 
       - name: Build with Test file
+
         run: python3 ctypes_test.py
