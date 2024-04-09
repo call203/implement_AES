@@ -21,5 +21,6 @@ jobs:
         run: make
 
       - name: Build with Test file
-
-        run: python3 ctypes_test.py
+        run: |
+          python3 -c "import sys; sys.path.append('./aes'); from aes import sub_bytes, bytes2matrix"
+          python3 ctypes_test.py
