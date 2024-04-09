@@ -16,3 +16,6 @@ jobs:
 
       - name: Build with Makefile
         run: make
+
+      - name: Build with Test file
+        run: python3 ctypes_test.py

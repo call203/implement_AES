@@ -13,6 +13,7 @@ class TestEncryption(unittest.TestCase):
             block_c = bytes(buffer)
             plain_state = bytes2matrix(buffer)
             rijndael.sub_bytes(block_c)
+            
             sub_bytes(plain_state)
             flat_list = [item for sublist in plain_state for item in sublist]
             block_python = bytes(flat_list)
