@@ -10,11 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-         with:
-          fetch-depth: 0
+   steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 
 
       - name: Build with Makefile
         run: make
