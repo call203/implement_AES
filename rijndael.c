@@ -335,6 +335,33 @@ void *expand_key(unsigned char *cipher_key, unsigned char *expanded_key)
  * The implementations of the functions declared in the
  * header file should go here
  */
+unsigned char *list2matrix(unsigned char *plaintext)
+{
+  int i, j;
+  unsigned char *matrix = (unsigned char *)malloc(16 * sizeof(unsigned char));
+  for (i = 0; i < 4; i++)
+  {
+    for (j = 0; j < 4; j++)
+    {
+      matrix[4 * i + j] = plaintext[i + j * 4];
+    }
+  }
+  return matrix;
+}
+
+unsigned char *matrix2list(unsigned char *matrix)
+{
+  int i, j;
+  unsigned char *plaintext = (unsigned char *)malloc(16 * sizeof(unsigned char));
+  for (i = 0; i < 4; i++)
+  {
+    for (j = 0; j < Nb; j++)
+    {
+      plaintext[i + 4 * j] = matrix[Nb * i + j];
+    }
+  }
+  return plaintext;
+}
 
 unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key)
 {
@@ -343,15 +370,7 @@ unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key)
   unsigned char *block = (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
   unsigned int i, j, round;
 
-  // reshaping plaintext from a linear array into a 4*4 matrix
-  for (i = 0; i < 4; i++)
-  {
-    for (j = 0; j < 4; j++)
-    {
-      block[4 * i + j] = plaintext[i + j * 4];
-    }
-  }
-
+  block = list2matrix(plaintext);
   add_round_key(block, key);
 
   for (round = 1; round < Nr; round++)
@@ -366,14 +385,7 @@ unsigned char *aes_encrypt_block(unsigned char *plaintext, unsigned char *key)
   shift_rows(block);
   add_round_key(block, key + Nr * 4 * Nb);
 
-  for (i = 0; i < 4; i++)
-  {
-    for (j = 0; j < Nb; j++)
-    {
-      output[i + 4 * j] = block[Nb * i + j];
-    }
-  }
-
+  output = matrix2list(block);
   free(block);
   return output;
 }
@@ -386,13 +398,7 @@ unsigned char *aes_decrypt_block(unsigned char *ciphertext,
   unsigned char *block = (unsigned char *)malloc(sizeof(unsigned char) * BLOCK_SIZE);
   unsigned int i, j, round;
 
-  for (i = 0; i < 4; i++)
-  {
-    for (j = 0; j < 4; j++)
-    {
-      block[4 * i + j] = ciphertext[i + j * 4];
-    }
-  }
+  block = list2matrix(ciphertext);
 
   add_round_key(block, key + Nr * 4 * Nb);
 
@@ -410,13 +416,7 @@ unsigned char *aes_decrypt_block(unsigned char *ciphertext,
   invert_sub_bytes(block);
   add_round_key(block, key);
 
-  for (i = 0; i < 4; i++)
-  {
-    for (j = 0; j < Nb; j++)
-    {
-      output[i + 4 * j] = block[Nb * i + j];
-    }
-  }
+  output = matrix2list(block);
 
   free(block);
   return output;

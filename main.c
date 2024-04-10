@@ -36,7 +36,7 @@ int main()
   expand_key(key, expanded_key);
 
   unsigned char *ciphertext = aes_encrypt_block(plaintext, expanded_key);
-  unsigned char *recovered_plaintext = aes_decrypt_block(ciphertext, key);
+  unsigned char *recovered_plaintext = aes_decrypt_block(ciphertext, expanded_key);
 
   printf("############ ORIGINAL PLAINTEXT ############\n");
   print_128bit_block(plaintext);
