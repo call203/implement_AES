@@ -12,6 +12,10 @@ list2matrix = rijndael.list2matrix
 list2matrix.restype = ctypes.POINTER(ctypes.c_ubyte * 16) 
 matrix2list = rijndael.matrix2list
 matrix2list.restype = ctypes.POINTER(ctypes.c_ubyte * 16) 
+c_encrypt_block = rijndael.aes_encrypt_block
+c_encrypt_block.restype = ctypes.POINTER(ctypes.c_ubyte * 16) 
+c_decrypt_block = rijndael.aes_encrypt_block
+c_decrypt_block.restype = ctypes.POINTER(ctypes.c_ubyte * 16) 
 
 # if key parameter has a value, it is `add_round_key` test
 def compute_python_func(buffer,f,key=[]):
@@ -22,7 +26,7 @@ def compute_python_func(buffer,f,key=[]):
     else:
         f(python_matrix)
     python_result = []
-    [python_result.extend(row) for row in python_matrix]
+    [python_result.extend(row) for row in python_matrix] #make 1-D array accoring to c return type
     return python_result
 
 def compute_c_func(buffer,f,key=[]):
@@ -32,7 +36,7 @@ def compute_c_func(buffer,f,key=[]):
     else:    
         f(c_matirx)
     c_list = matrix2list(c_matirx)
-    c_result = (ctypes.c_ubyte * 16)()
+    c_result = (ctypes.c_ubyte * 16)() #list to ctypes array
     ctypes.memmove(c_result,c_list, 16 * ctypes.sizeof(ctypes.c_ubyte))
     return c_result
             
@@ -101,11 +105,13 @@ class TestEncryption(unittest.TestCase):
             
     def test_expanded_key(self):
         for _ in range(0,3):
+            #Python
             buffer = random.randbytes(16)
             aes = AES(buffer)
             python_result = []
             [python_result.extend(row) for row in aes._key_matrices]
 
+            #C
             c_list = (ctypes.c_ubyte * 176)()
             rijndael.expand_key(buffer,c_list)
     
@@ -123,10 +129,39 @@ class TestEncryption(unittest.TestCase):
 
             self.assertEqual(c_result,python_result)
 
-            
+    def encrypt_block(self, plain_text, master_key):
+        #C
+        c_master_key = (ctypes.c_ubyte * 176)()            
+        rijndael.expand_key(master_key, c_master_key)
+        c_master_key = bytearray(c_master_key)
+
+        c_encryption = (ctypes.c_ubyte * 16)()
+        c_encryption_array = c_encrypt_block(plain_text,bytes(c_master_key))
+        ctypes.memmove(c_encryption,c_encryption_array, 16 * ctypes.sizeof(ctypes.c_ubyte))
+        c_encryption = bytes(c_encryption) # ctpes_array to byte
+
+        #Python
+        aes = AES(master_key)
+        python_encryption = aes.encrypt_block(plain_text)
+
+        return c_encryption, python_encryption
+
+    def test_aes(self):
+         for _ in range(0,3):
+            plain_text = random.randbytes(16)
+            master_key = random.randbytes(16)
+            c_encryption, python_encryption = self.encrypt_block(plain_text, master_key)
+
+            #compare cipher_text
+            self.assertEqual(c_encryption,python_encryption)
+
+
                 
-            
-        
+
+
+
+
+
             
 if __name__ == '__main__':
     unittest.main()
