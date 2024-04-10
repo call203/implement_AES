@@ -1,6 +1,7 @@
 import sys
 sys.path.append('./aes')
 from aes import bytes2matrix,sub_bytes,shift_rows,mix_columns,add_round_key,inv_sub_bytes,inv_shift_rows,inv_mix_columns
+from aes import AES
 import unittest
 import random
 import ctypes
@@ -96,16 +97,36 @@ class TestEncryption(unittest.TestCase):
             python_result = compute_python_func(buffer,inv_mix_columns)
             c_result = compute_c_func(buffer,rijndael.invert_mix_columns)
 
-            self.assertEqual(bytes(python_result), bytes(c_result))        
+            self.assertEqual(bytes(python_result), bytes(c_result))    
             
-                        
-            
-                
-            
-               
-            
-                
-            
+    def test_expanded_key(self):
+        for _ in range(0,3):
+            buffer = random.randbytes(16)
+            aes = AES(buffer)
+            python_result = []
+            [python_result.extend(row) for row in aes._key_matrices]
 
+            c_list = (ctypes.c_ubyte * 176)()
+            rijndael.expand_key(buffer,c_list)
+    
+            c_result = []
+            temp = []
+            #python `_expand_key` returns byte([4 items]) after index 16 
+            #therefore, convert result format of c function accdoring to that
+            for idx,item in enumerate(c_list):
+                temp.append(item)
+                if((idx+1)%4 ==0):
+                    if(idx > 16):
+                        temp = bytes(temp)    
+                    c_result.append(temp) 
+                    temp = []
+
+            self.assertEqual(c_result,python_result)
+
+            
+                
+            
+        
+            
 if __name__ == '__main__':
     unittest.main()
