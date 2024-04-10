@@ -19,5 +19,10 @@ jobs:
       - name: Build with Makefile
         run: make
 
+      - name: Build main
+        run: gcc main.c rijndael.c -o main
+      - name: main output
+        run: ./main
+
       - name: Build with Test file
         run: python3 ctypes_test.py
