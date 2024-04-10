@@ -14,7 +14,7 @@ matrix2list = rijndael.matrix2list
 matrix2list.restype = ctypes.POINTER(ctypes.c_ubyte * 16) 
 c_encrypt_block = rijndael.aes_encrypt_block
 c_encrypt_block.restype = ctypes.POINTER(ctypes.c_ubyte * 16) 
-c_decrypt_block = rijndael.aes_encrypt_block
+c_decrypt_block = rijndael.aes_decrypt_block
 c_decrypt_block.restype = ctypes.POINTER(ctypes.c_ubyte * 16) 
 
 # if key parameter has a value, it is `add_round_key` test
@@ -129,31 +129,54 @@ class TestEncryption(unittest.TestCase):
 
             self.assertEqual(c_result,python_result)
 
-    def encrypt_block(self, plain_text, master_key):
+    def encrypt_block(self, plain_text, master_key, c_master_key):
         #C
-        c_master_key = (ctypes.c_ubyte * 176)()            
-        rijndael.expand_key(master_key, c_master_key)
-        c_master_key = bytearray(c_master_key)
-
         c_encryption = (ctypes.c_ubyte * 16)()
         c_encryption_array = c_encrypt_block(plain_text,bytes(c_master_key))
         ctypes.memmove(c_encryption,c_encryption_array, 16 * ctypes.sizeof(ctypes.c_ubyte))
-        c_encryption = bytes(c_encryption) # ctpes_array to byte
+        c_encryption = bytes(c_encryption) # ctypes_array to byte
 
         #Python
         aes = AES(master_key)
         python_encryption = aes.encrypt_block(plain_text)
 
         return c_encryption, python_encryption
+    
+    def decrypt_block(self, encryption_text, master_key, c_master_key):
+        #C
+        c_decryption = (ctypes.c_ubyte * 16)()
+        
+        c_decryption_array = c_decrypt_block(encryption_text,bytes(c_master_key))
+        ctypes.memmove(c_decryption, c_decryption_array, 16 * ctypes.sizeof(ctypes.c_ubyte))
+        c_decryption = bytes(c_decryption) 
+
+        #Python
+        aes = AES(master_key)
+        python_decryption = aes.decrypt_block(encryption_text)
+
+        return c_decryption, python_decryption
 
     def test_aes(self):
          for _ in range(0,3):
             plain_text = random.randbytes(16)
             master_key = random.randbytes(16)
-            c_encryption, python_encryption = self.encrypt_block(plain_text, master_key)
-
+            
+            #C - key expansion
+            c_master_key = (ctypes.c_ubyte * 176)()            
+            rijndael.expand_key(master_key, c_master_key)
+            c_master_key = bytearray(c_master_key)
+            
+            c_encryption, python_encryption = self.encrypt_block(plain_text, master_key, c_master_key)
             #compare cipher_text
             self.assertEqual(c_encryption,python_encryption)
+
+            #compare recover_text
+            if(c_encryption == python_encryption):
+                c_decryption, python_decryption = self.decrypt_block(c_encryption, master_key, c_master_key)
+                self.assertEqual(c_decryption, python_decryption)
+            else:
+                print("!!!! encrpytion key does not match !!!!")
+
 
 
                 
