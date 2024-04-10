@@ -1,6 +1,6 @@
 import sys
 sys.path.append('./aes')
-from aes import bytes2matrix,sub_bytes,shift_rows
+from aes import bytes2matrix,sub_bytes,shift_rows,mix_columns
 import unittest
 import random
 import ctypes
@@ -41,8 +41,20 @@ class TestEncryption(unittest.TestCase):
             buffer = random.randbytes(16)
             python_result = compute_python_func(buffer,shift_rows)
             c_result = compute_c_func(buffer,rijndael.shift_rows)
+            
+            self.assertEqual(bytes(python_result), bytes(c_result))
+
+
+    def test_mix_columns(self):
+        for _ in range(0,3):
+            buffer = random.randbytes(16)
+            python_result = compute_python_func(buffer,mix_columns)
+            c_result = compute_c_func(buffer,rijndael.mix_columns)
   
             self.assertEqual(bytes(python_result), bytes(c_result))
+            
+
+                
             
 
                 
