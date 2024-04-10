@@ -177,6 +177,11 @@ class TestEncryption(unittest.TestCase):
             else:
                 print("!!!! encrpytion key does not match !!!!")
 
+            # C - compare plain_text and recover_texts
+            self.assertEqual(plain_text, c_decryption)  
+            # Python - compare plain_text and recover_texts
+            self.assertEqual(plain_text, python_decryption)   
+
 
 
                 

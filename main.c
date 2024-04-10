@@ -32,7 +32,7 @@ int main()
   unsigned char key[16] = {50, 20, 46, 86, 67, 9, 70, 27,
                            75, 17, 51, 17, 4, 8, 6, 99};
 
-  unsigned char expanded_key[176];
+  unsigned char *expanded_key = (unsigned char *)malloc(176 * sizeof(unsigned char));
   expand_key(key, expanded_key);
 
   unsigned char *ciphertext = aes_encrypt_block(plaintext, expanded_key);
@@ -49,6 +49,7 @@ int main()
 
   free(ciphertext);
   free(recovered_plaintext);
+  free(expanded_key);
 
   return 0;
 }
