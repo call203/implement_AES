@@ -35,6 +35,17 @@ class TestEncryption(unittest.TestCase):
             c_result = compute_c_func(buffer,rijndael.sub_bytes)
   
             self.assertEqual(bytes(python_result), bytes(c_result))
+    
+    def test_shift_rows(self):
+        for _ in range(0,3):
+            buffer = random.randbytes(16)
+            python_result = compute_python_func(buffer,shift_rows)
+            c_result = compute_c_func(buffer,rijndael.shift_rows)
+  
+            self.assertEqual(bytes(python_result), bytes(c_result))
+            
+
+                
 
 
 if __name__ == '__main__':
