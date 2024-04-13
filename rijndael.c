@@ -1,6 +1,7 @@
 /*
- * TODO: Add your name and student number here, along with
- *       a brief description of this code.
+ Soyeon Lee
+ D23125712
+ TU059 ASD
  */
 #include <stdlib.h>
 #include <stdio.h>
@@ -335,6 +336,7 @@ void *expand_key(unsigned char *cipher_key, unsigned char *expanded_key)
  * The implementations of the functions declared in the
  * header file should go here
  */
+// change a list to a 4 x 4 matrix
 unsigned char *list2matrix(unsigned char *plaintext)
 {
   int i, j;
@@ -348,7 +350,7 @@ unsigned char *list2matrix(unsigned char *plaintext)
   }
   return matrix;
 }
-
+// change a 4 x 4 matrix to a list
 unsigned char *matrix2list(unsigned char *matrix)
 {
   int i, j;
