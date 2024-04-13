@@ -1,3 +1,8 @@
+/*
+ Soyeon Lee
+ D23125712
+ TU059 ASD
+ */
 #include <stdio.h>
 #include <stdlib.h>
 
