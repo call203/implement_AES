@@ -2,6 +2,10 @@
  Soyeon Lee
  D23125712
  TU059 ASD
+ This is code that implements encryption and decryption functions for AES,
+ which operates on fixed-size blocks of 128 bits with 10 around.
+ This encrption process involves key expansion, initial and main rounds, while
+ decryption includes key expansion, main arounds in reverse order, and a final around.
  */
 #include <stdlib.h>
 #include <stdio.h>
